@@ -62,10 +62,13 @@ export const register = async (req: Request, res: Response) => {
             }).save();
 
             // stwórz token przy rejestracji
-            const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET!, {expiresIn: '7d'});
+            const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET!, {expiresIn: '1d'});
+
+            // przechowaj token w ciasteczku - 1 dzień
+            res.cookie('token', token, {maxAge: 1000 * 60 * 60 * 24});
 
             // ogranicz wysyłane dane użytkownika
-            const {password, role, resetPasswordLink, ...rest} = user._doc;
+            const {password, resetPasswordLink, ...rest} = user._doc;
 
             // zwróć do użytkownika dane + token
             return res.status(200).json({
@@ -93,7 +96,7 @@ export const login = async (req: Request, res: Response) => {
             });
         }
 
-        // hasło
+        // hasło:
         const isPasswordMatch = await comparePassword(req.body.password, user.password);
         if (!isPasswordMatch) {
             return res.json(400).json({
@@ -102,10 +105,13 @@ export const login = async (req: Request, res: Response) => {
         }
 
         // stwórz token przy logowaniu
-        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET!, {expiresIn: '7d'});
+        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET!, {expiresIn: '1d'});
+
+        // przechowaj token w ciasteczku - 1 dzień
+        res.cookie('token', token, {maxAge: 1000 * 60 * 60 * 24});
 
         // ogranicz wysyłane dane użytkownika
-        const {password, role, resetPasswordLink, ...rest} = user._doc;
+        const {password, resetPasswordLink, ...rest} = user._doc;
 
         // zwróć do użytkownika dane + token
         return res.status(200).json({
@@ -116,4 +122,12 @@ export const login = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error);
     }
+};
+
+export const logout = async (req: Request, res: Response) => {
+    // usuń ciasteczko "token"
+    await res.clearCookie("token");
+    return res.status(200).json({
+       message: "Zostałeś wylogowany!"
+    });
 };
