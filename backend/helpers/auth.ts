@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 
+// hashowanie hasła
 export const hashPassword = (password: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         bcrypt.genSalt(12, (err, salt) => {
@@ -18,6 +19,7 @@ export const hashPassword = (password: string): Promise<string> => {
     });
 };
 
+// porównaj hasła czy pasują
 export const comparePassword = (password: string, hashed: string): Promise<boolean> => {
     return bcrypt.compare(password, hashed);
 };
