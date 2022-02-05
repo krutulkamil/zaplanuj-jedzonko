@@ -21,10 +21,10 @@ const Tag: FunctionComponent = (): JSX.Element => {
     const {name, tags, reload} = values;
 
     useEffect(() => {
-        loadCategories();
+        loadTags();
     }, [reload]);
 
-    const loadCategories = async () => {
+    const loadTags = async () => {
         const tags = await getTags()
         setValues({...values, tags});
     };

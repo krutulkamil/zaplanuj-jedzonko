@@ -14,6 +14,7 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import categoryRoutes from './routes/category';
 import tagRoutes from './routes/tag';
+import recipeRoutes from './routes/recipe';
 
 // express
 const app: Express = express();
@@ -45,6 +46,7 @@ app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', tagRoutes);
+app.use('/api', recipeRoutes);
 
 // express listen to:
 const PORT = process.env.PORT || 8000;
