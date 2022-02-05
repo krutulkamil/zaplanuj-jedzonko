@@ -1,10 +1,9 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState} from 'react';
 import {NextPage} from "next";
 import Link from 'next/link';
 import {toast} from 'react-toastify';
 import {FaUser} from 'react-icons/fa';
 import Layout from '../../components/Layout';
-import axios, {AxiosError} from 'axios';
 import {register} from '../../actions/auth';
 import {SyncOutlined} from "@ant-design/icons";
 
