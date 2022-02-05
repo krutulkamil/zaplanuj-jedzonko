@@ -13,6 +13,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import categoryRoutes from './routes/category';
+import tagRoutes from './routes/tag';
 
 // express
 const app: Express = express();
@@ -43,6 +44,7 @@ app.use(cors({
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
+app.use('/api', tagRoutes);
 
 // express listen to:
 const PORT = process.env.PORT || 8000;
