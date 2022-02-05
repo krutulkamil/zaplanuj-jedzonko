@@ -58,9 +58,9 @@ export const removeCookie = (key: string) => {
     }
 };
 
-export const getCookie = (key: string) => {
+export const getCookie = (key: string): string | undefined => {
     if (typeof window !== 'undefined') {
-        cookie.get(key);
+        return cookie.get(key);
     }
 };
 
