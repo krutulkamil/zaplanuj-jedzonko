@@ -4,8 +4,9 @@ import Link from 'next/link';
 import {toast} from 'react-toastify';
 import {FaUser} from 'react-icons/fa';
 import Layout from '../../components/Layout';
-import {register} from '../../actions/auth';
+import {isAuth, register} from '../../actions/auth';
 import {SyncOutlined} from "@ant-design/icons";
+import Router from "next/router";
 
 interface RegisterState {
     name: string;
@@ -25,6 +26,10 @@ const RegisterPage: NextPage = () => {
     });
 
     const {name, email, password, passwordConfirm, loading} = values;
+
+    if (isAuth()) {
+        Router.push('/');
+    }
 
     const handleInputChange = (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setValues({...values, [value]: e.target.value});

@@ -2,6 +2,8 @@ import {FunctionComponent} from 'react';
 import Link from 'next/link';
 import {FaSignInAlt, FaSignOutAlt} from 'react-icons/fa'
 import {MdFastfood} from 'react-icons/md'
+import {isAuth, logout} from "../actions/auth";
+import Router from "next/router";
 
 const Header: FunctionComponent = (): JSX.Element => {
     return (
@@ -31,21 +33,25 @@ const Header: FunctionComponent = (): JSX.Element => {
                             <a>Tablica</a>
                         </Link>
                     </li>
-                    <li>
-                        <Link href="/account/login">
-                            <a className="btn-secondary btn-icon">
-                                <FaSignInAlt/> Zaloguj
-                            </a>
-                        </Link>
-                    </li>
 
-                    <li>
-                        <Link href="/account/logout">
-                            <a className="btn-secondary btn-icon">
+                    {isAuth() ? (
+                        <li>
+                            <a className="btn-secondary btn-icon" onClick={() => logout(() => Router.replace('/account/login'))}>
                                 <FaSignOutAlt/> Wyloguj
                             </a>
-                        </Link>
-                    </li>
+                        </li>
+                    ) : (
+                        <>
+                            <li>
+                                <Link href="/account/login">
+                                    <a className="btn-secondary btn-icon">
+                                        <FaSignInAlt/> Zaloguj
+                                    </a>
+                                </Link>
+                            </li>
+                        </>
+                    )}
+
                 </ul>
             </nav>
         </header>

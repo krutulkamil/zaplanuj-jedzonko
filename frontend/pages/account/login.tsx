@@ -3,8 +3,9 @@ import {NextPage} from "next";
 import Link from 'next/link';
 import Layout from '../../components/Layout';
 import {FaUser} from 'react-icons/fa';
-import {login} from '../../actions/auth';
+import {login, isAuth} from '../../actions/auth';
 import {SyncOutlined} from "@ant-design/icons";
+import Router from "next/router";
 
 interface LoginState {
     email: string;
@@ -20,6 +21,10 @@ const LoginPage: NextPage = (): JSX.Element => {
     });
 
     const {email, password, loading} = values;
+
+    if (isAuth()) {
+        Router.push('/');
+    }
 
     const handleInputChange = (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setValues({...values, [value]: e.target.value});

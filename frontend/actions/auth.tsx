@@ -7,11 +7,10 @@ import {AuthUser, User, UserInformation} from "../types";
 export const login = async (user: AuthUser) => {
     try {
         const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/login`, user);
-        console.log(data)
         toast.success(`Witaj ponownie!` , {theme: "dark"});
         authenticate(data, async () => {
             await Router.push('/');
-        })
+        });
     } catch (error) {
         const err = error as AxiosError;
         toast.error(err.response?.data.error, {theme: "dark"});
@@ -20,9 +19,25 @@ export const login = async (user: AuthUser) => {
 
 export const register = async (user: AuthUser) => {
     try {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/register`, user);
+        const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/register`, user);
         toast.success(`Witamy na pokładzie ${user.name}` , {theme: "dark"});
-        await Router.push('/');
+        authenticate(data, async () => {
+            await Router.push('/');
+        });
+    } catch (error) {
+        const err = error as AxiosError;
+        toast.error(err.response?.data.error, {theme: "dark"});
+    }
+};
+
+export const logout = async (next: Function) => {
+    removeCookie('token');
+    localStorage.removeItem('user');
+    next();
+
+    try {
+        const {data} = await axios.get(`${process.env.NEXT_PUBLIC_API_SERVER}/logout`);
+        toast.success(data.message, {theme: "dark"});
     } catch (error) {
         const err = error as AxiosError;
         toast.error(err.response?.data.error, {theme: "dark"});
