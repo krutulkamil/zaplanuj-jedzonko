@@ -30,7 +30,7 @@ export const read = (req: IUserRequest, res: Response) => {
 export const authMiddleware = async (req: IUserRequest, res: Response, next: NextFunction) => {
     const authUserId = req.user?._id;
 
-    await User.findById({_id: authUserId}).exec((err, user) => {
+    User.findById({_id: authUserId}).exec((err, user) => {
         if (err || !user) {
             return res.status(400).json({
                 error: "Nie znaleziono użytkownika"
@@ -44,16 +44,16 @@ export const authMiddleware = async (req: IUserRequest, res: Response, next: Nex
 export const adminMiddleware = async (req: IUserRequest, res: Response, next: NextFunction) => {
     const adminUserId = req.user?._id;
 
-    await User.findById({_id: adminUserId}).exec((err, user) => {
+    User.findById({_id: adminUserId}).exec((err, user) => {
         if (err || !user) {
             return res.status(400).json({
                 error: "Nie znaleziono użytkownika"
-            })
+            });
         }
         if (user.role !== 1) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: "Wstęp wzbroniony!"
-            })
+            });
         }
 
         req.profile = user;

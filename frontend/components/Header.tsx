@@ -28,11 +28,20 @@ const Header: FunctionComponent = (): JSX.Element => {
                             <a>Kategorie</a>
                         </Link>
                     </li>
-                    <li>
-                        <Link href="/dashboard">
-                            <a>Tablica</a>
-                        </Link>
-                    </li>
+
+                    {isAuth() && isAuth().role === 1 ? (
+                        <li>
+                            <Link href="/user/admin">
+                                <a>Tablica</a>
+                            </Link>
+                        </li>
+                    ) : (
+                        <li>
+                            <Link href="/user">
+                                <a>Tablica</a>
+                            </Link>
+                        </li>
+                    )}
 
                     {isAuth() ? (
                         <li>
