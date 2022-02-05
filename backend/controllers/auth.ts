@@ -128,6 +128,7 @@ export const logout = async (req: Request, res: Response) => {
     // usuń ciasteczko "token"
     await res.clearCookie("token");
     return res.status(200).json({
-       message: "Zostałeś wylogowany!"
+        message: "Zostałeś wylogowany!"
     });
 };
+

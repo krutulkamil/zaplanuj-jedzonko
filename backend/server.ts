@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 // routes
 import authRoutes from "./routes/auth";
+import userRoutes from "./routes/user";
 
 // express
 const app: Express = express();
@@ -39,6 +40,7 @@ app.use(cors({
 
 // routes
 app.use('/api', authRoutes);
+app.use('/api', userRoutes);
 
 // express listen to:
 const PORT = process.env.PORT || 8000;
