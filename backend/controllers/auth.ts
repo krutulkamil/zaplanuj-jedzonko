@@ -91,15 +91,15 @@ export const login = async (req: Request, res: Response) => {
         // email:
         const user = await User.findOne({email: req.body.email});
         if (!user) {
-            return res.status(404).send({
-                message: "Użytkownik o podanym adresie email nie istnieje!"
+            return res.status(404).json({
+                error: "Użytkownik o podanym adresie email nie istnieje!"
             });
         }
 
         // hasło:
         const isPasswordMatch = await comparePassword(req.body.password, user.password);
         if (!isPasswordMatch) {
-            return res.json(400).json({
+            return res.status(400).json({
                 error: "Podane hasło jest nieprawidłowe!"
             });
         }
@@ -114,9 +114,9 @@ export const login = async (req: Request, res: Response) => {
         const {password, resetPasswordLink, ...rest} = user._doc;
 
         // zwróć do użytkownika dane + token
-        return res.status(200).json({
-            user: rest,
-            token
+        res.json({
+            token,
+            user: rest
         });
 
     } catch (error) {

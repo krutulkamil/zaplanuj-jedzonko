@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: $font-poppins;
+  line-height: 1.8;
+}
+
+a {
+  text-decoration: none;
+  color: $links-color;
+}
+
+p {
+  margin: 10px 0;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.container {
+  margin: 30px auto;
+  max-width: 1260px;
+  padding: 0 30px;
+}
