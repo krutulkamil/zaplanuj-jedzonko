@@ -1,55 +1,55 @@
 import {useState, useEffect, FunctionComponent, ChangeEvent, MouseEvent} from 'react';
 import {getCookie} from "../../actions/auth";
-import {create, getCategories, removeCategory} from '../../actions/category';
+import {create, getTags, removeTag} from '../../actions/tag';
 import {BiAddToQueue} from 'react-icons/bi';
-import {Category} from '../../actions/category';
+import {Tag} from '../../actions/tag';
 import ReactTooltip from "react-tooltip";
 
 interface InitialState {
     name: string;
-    categories: Category[] | undefined;
+    tags: Tag[] | undefined;
     reload: boolean;
 }
 
-const Category: FunctionComponent = (): JSX.Element => {
+const Tag: FunctionComponent = (): JSX.Element => {
     const [values, setValues] = useState<InitialState>({
         name: '',
-        categories: [],
+        tags: [],
         reload: false
     });
 
-    const {name, categories, reload} = values;
+    const {name, tags, reload} = values;
 
     useEffect(() => {
         loadCategories();
     }, [reload]);
 
     const loadCategories = async () => {
-        const categories = await getCategories();
-        setValues({...values, categories});
+        const tags = await getTags()
+        setValues({...values, tags});
     };
 
-    const showCategories = () => {
-        return categories?.map((category, index) => {
+    const showTags = () => {
+        return tags?.map((tag, index) => {
             return (
                 <>
                     <ReactTooltip place="top" type="dark" effect="float"/>
-                    <button onDoubleClick={() => deleteConfirm(category.slug)} key={index} className="btn-secondary-category"
-                            data-tip="Kliknij dwa razy aby usunąć">{category.name}</button>
+                    <button onDoubleClick={() => deleteConfirm(tag.slug)} key={index} className="btn-secondary-tag"
+                            data-tip="Kliknij dwa razy aby usunąć">{tag.name}</button>
                 </>
             )
         });
     };
 
     const deleteConfirm = async (slug: string) => {
-        let answer = window.confirm('Czy na pewno chcesz usunąć tą kategorię?');
+        let answer = window.confirm('Czy na pewno chcesz usunąć ten tag?');
         if (answer) {
-            await deleteCategory(slug);
+            await deleteTag(slug);
         }
     };
 
-    const deleteCategory = async (slug: string) => {
-        await removeCategory(slug, token);
+    const deleteTag = async (slug: string) => {
+        await removeTag(slug, token);
         setValues({...values, reload: !reload});
     };
 
@@ -65,25 +65,25 @@ const Category: FunctionComponent = (): JSX.Element => {
         setValues({...values, name: '', reload: !reload});
     };
 
-    const newCategoryForm = () => (
+    const newTagForm = () => (
         <form onSubmit={handleClickSubmit} className="category-tag-form">
             <label>Nazwa:</label>
             <input type="text" onChange={handleChange} value={name} className="category-tag-input"/>
-            <button type="submit" className="btn-secondary-category">
+            <button type="submit" className="btn-secondary-tag">
                 <BiAddToQueue/> {" "} Dodaj
             </button>
         </form>
     )
 
     return (
-        <div className="category-wrapper">
-            <h3 className="category-header">Kategorie:</h3>
-            {newCategoryForm()}
-            <div className="categories-container">
-                {showCategories()}
+        <div className="tag-wrapper">
+            <h3 className="tag-header">Tagi:</h3>
+            {newTagForm()}
+            <div className="tags-container">
+                {showTags()}
             </div>
         </div>
     )
 };
 
-export default Category;
+export default Tag;

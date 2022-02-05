@@ -1,0 +1,44 @@
+.category-tag-wrapper {
+  display: flex;
+}
+
+.category-tag-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-tag-input {
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.category-wrapper {
+  padding: 0 40px 0 0;
+  flex: 1;
+}
+
+.category-header {
+  margin-top: 30px;
+}
+
+.categories-container {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag-wrapper {
+  padding: 0 0 0 40px;
+  flex: 1;
+}
+
+.tag-header {
+  margin-top: 30px;
+}
+
+.tags-container {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
