@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {IUserModel} from './user';
 import {ICategoryModel} from './category';
 import {ITagModel} from './tag';
+import {IPhotoModel} from "./photo";
 const Schema = mongoose.Schema;
 
 const recipeSchema = new Schema({
@@ -52,7 +53,7 @@ export interface IRecipeModel extends DocumentResult<IRecipeModel> {
     excerpt: string;
     mtitle: string;
     mdesc: string;
-    photo: {};
+    photo: IPhotoModel;
     categories: ICategoryModel;
     tags: ITagModel;
     postedBy: IUserModel;

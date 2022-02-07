@@ -14,6 +14,7 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import categoryRoutes from './routes/category';
 import tagRoutes from './routes/tag';
+import photoRoutes from './routes/photo';
 import recipeRoutes from './routes/recipe';
 
 // express
@@ -46,6 +47,7 @@ app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', tagRoutes);
+app.use('/api', photoRoutes);
 app.use('/api', recipeRoutes);
 
 // express listen to:
