@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-const photoSchema = new Schema({
+const imageSchema = new Schema({
         filename: {
             type: String,
             required: true
@@ -29,11 +29,11 @@ interface DocumentResult<T> {
     _doc: T;
 }
 
-export interface IPhotoModel extends DocumentResult<IPhotoModel> {
+export interface IImageModel extends DocumentResult<IImageModel> {
     filename: string;
     secure_url: string;
     format: string;
     sizeInBytes: string;
 }
 
-export default mongoose.model<IPhotoModel>('Photo', photoSchema);
+export default mongoose.model<IImageModel>('Image', imageSchema);

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import {IUserModel} from './user';
 import {ICategoryModel} from './category';
 import {ITagModel} from './tag';
-import {IPhotoModel} from "./photo";
+
 const Schema = mongoose.Schema;
 
 const recipeSchema = new Schema({
@@ -35,7 +35,7 @@ const recipeSchema = new Schema({
     mdesc: {
         type: String,
     },
-    photo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Photo'}],
+    photo: {type: mongoose.Schema.Types.ObjectId, ref: 'Image'},
     categories: [{type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true}],
     tags: [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag', required: true}],
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
@@ -50,10 +50,10 @@ export interface IRecipeModel extends DocumentResult<IRecipeModel> {
     title: string;
     slug: string;
     body: {};
-    excerpt: string;
+    excerpt: string | undefined
     mtitle: string;
     mdesc: string;
-    photo: IPhotoModel;
+    photo: string;
     categories: ICategoryModel;
     tags: ITagModel;
     postedBy: IUserModel;

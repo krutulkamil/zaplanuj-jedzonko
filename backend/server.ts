@@ -14,7 +14,7 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import categoryRoutes from './routes/category';
 import tagRoutes from './routes/tag';
-import photoRoutes from './routes/photo';
+import photoRoutes from './routes/image';
 import recipeRoutes from './routes/recipe';
 
 // express

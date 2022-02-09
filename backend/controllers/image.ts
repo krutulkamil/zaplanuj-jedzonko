@@ -1,12 +1,27 @@
-import {Request, Response} from 'express';
+import {NextFunction, Request, Response} from 'express';
 import {UploadApiResponse, v2 as cloudinary} from "cloudinary";
 import https from "https";
 import dotenv from "dotenv";
-import Photo from '../models/photo';
+import Image from '../models/image';
+import mongoose from "mongoose";
 
 dotenv.config();
 
-export const uploadPhoto = async (req: Request, res: Response) => {
+interface ReqImage {
+    filename: string;
+    format: string;
+    sizeInBytes: string;
+    _id: mongoose.Types.ObjectId;
+    createdAt?: Date;
+    updatedAt?: Date;
+    __v?: number
+}
+
+interface IImageRequest extends Request {
+    image: ReqImage;
+}
+
+export const uploadImage = async (req: IImageRequest, res: Response, next: NextFunction) => {
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -33,17 +48,14 @@ export const uploadPhoto = async (req: Request, res: Response) => {
         const {originalname} = req.file;
         const {secure_url, bytes, format} = uploadedFile;
 
-        const photo = await Photo.create({
+        req.image = await Image.create({
             filename: originalname,
             sizeInBytes: bytes,
             secure_url,
             format
         });
 
-        res.status(200).json({
-            id: photo._id,
-            secure_url
-        });
+        next();
 
     } catch (error) {
         console.log((error as Error).message);
@@ -53,17 +65,17 @@ export const uploadPhoto = async (req: Request, res: Response) => {
     }
 };
 
-export const getPhoto = async (req: Request, res: Response) => {
+export const getImage = async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
-        const photo = await Photo.findById(id);
-        if (!photo) {
+        const image = await Image.findById(id);
+        if (!image) {
             return res.status(404).json({
                 message: "Zdjęcie nie zostało znalezione!"
             });
         }
 
-        const {filename, format, sizeInBytes} = photo;
+        const {filename, format, sizeInBytes} = image;
 
         return res.status(200).json({
             name: filename,
@@ -80,17 +92,17 @@ export const getPhoto = async (req: Request, res: Response) => {
     }
 };
 
-export const downloadPhoto = async (req: Request, res: Response) => {
+export const downloadImage = async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
-        const photo = await Photo.findById(id);
-        if (!photo) {
+        const image = await Image.findById(id);
+        if (!image) {
             return res.status(404).json({
                 message: "Zdjęcie nie istnieje!"
             });
         }
 
-        https.get(photo.secure_url, (photoStream) => photoStream.pipe(res));
+        https.get(image.secure_url, (imageStream) => imageStream.pipe(res));
 
     } catch (error) {
         console.log((error as Error).message);
