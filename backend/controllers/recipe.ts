@@ -2,34 +2,21 @@ import {Request, Response} from "express";
 import Recipe from "../models/recipe";
 // import Category from '../models/Category';
 // import Tag from '../models/Tag';
-// import slugify from "slugify";
 import {stripHtml} from "string-strip-html";
 import _ from "lodash";
 import {smartTrim} from "../helpers/recipe";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 import slugify from "slugify";
 
 dotenv.config();
 
-interface ReqImage {
-    filename: string;
-    secure_url: string;
-    format: string;
-    sizeInBytes: string;
-    _id: mongoose.Types.ObjectId;
-    createdAt?: Date;
-    updatedAt?: Date;
-    __v?: number
-}
-
 interface IRecipeRequest extends Request {
-    image: ReqImage;
+    image: any;
     user: any
 }
 
 export const create = async (req: IRecipeRequest, res: Response) => {
-    // console.log(req.image);
 
     const {title, body, categories, tags} = req.body;
 
@@ -65,7 +52,7 @@ export const create = async (req: IRecipeRequest, res: Response) => {
     recipe.mtitle = `${title} | ${process.env.APP_NAME}`;
     recipe.mdesc = stripHtml(body.substring(0, 160)).result;
     recipe.postedBy = req.user._id;
-    recipe.photo = req.image.secure_url;
+    recipe.photo = req.image._id;
 
     // kategorie & tagi
     let arrayOfCategories = categories && categories.split(',');
@@ -84,14 +71,14 @@ export const create = async (req: IRecipeRequest, res: Response) => {
             .exec((err, result) => {
                 if (err) {
                     return res.status(400).json({
-                        error: "Nie można zapisać przepisu! Błąd kategorii!"
+                        error: "Błąd! Nie można zapisać przepisu! (Kategorie)"
                     });
                 } else {
-                    Recipe.findByIdAndUpdate(result!._id, {$push: {tags: arrayOfTags}}, {new: true})
+                    Recipe.findByIdAndUpdate(result?._id, {$push: {tags: arrayOfTags}}, {new: true})
                         .exec((err, result) => {
                             if (err) {
                                 return res.status(400).json({
-                                    error: "Nie można zapisać przepisu! Błąd tagów!"
+                                    error: "Błąd! Nie można zapisać przepisu! (Tagi)"
                                 });
                             } else {
                                 res.json(result);

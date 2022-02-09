@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {IUserModel} from './user';
 import {ICategoryModel} from './category';
 import {ITagModel} from './tag';
+import {IImageModel} from "./image";
 
 const Schema = mongoose.Schema;
 
@@ -53,9 +54,9 @@ export interface IRecipeModel extends DocumentResult<IRecipeModel> {
     excerpt: string | undefined
     mtitle: string;
     mdesc: string;
-    photo: string;
-    categories: ICategoryModel;
-    tags: ITagModel;
+    photo: IImageModel;
+    categories: ICategoryModel[];
+    tags: ITagModel[];
     postedBy: IUserModel;
 }
 

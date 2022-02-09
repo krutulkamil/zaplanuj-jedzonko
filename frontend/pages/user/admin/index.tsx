@@ -2,9 +2,8 @@ import type {NextPage} from 'next';
 import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import Admin from "../../../components/auth/Admin";
-import {FcAddDatabase} from 'react-icons/fc';
 import {IoFastFoodOutline} from 'react-icons/io5';
-import {BsFillCalendar2WeekFill} from 'react-icons/bs';
+import {BsFillCalendar2WeekFill, BsCardList, BsFillTagsFill} from 'react-icons/bs';
 
 const AdminIndex: NextPage = () => {
     return (
@@ -12,9 +11,16 @@ const AdminIndex: NextPage = () => {
             <Layout>
                 <h2>Panel administratora</h2>
                 <div className="add-recipe">
+                    <Link href="/crud/recipe">
+                        <a>
+                            <IoFastFoodOutline/>{" "} Dodaj nowy przepis
+                        </a>
+                    </Link>
+                </div>
+                <div className="manage-recipes">
                     <Link href="/crud/category-tag">
                         <a>
-                            <IoFastFoodOutline/>{" "} Zarządzaj przepisami
+                            <BsCardList/>{" "} Zarządzaj przepisami
                         </a>
                     </Link>
                 </div>
@@ -28,7 +34,7 @@ const AdminIndex: NextPage = () => {
                 <div className="add-category">
                     <Link href="/crud/category-tag">
                         <a>
-                            <FcAddDatabase/>{" "} Zarządzaj kategoriami / tagami
+                            <BsFillTagsFill/>{" "} Zarządzaj kategoriami / tagami
                         </a>
                     </Link>
                 </div>
