@@ -14,6 +14,6 @@ let upload = multer({
 });
 
 // @ts-ignore
-router.post('/recipe', requireSignin, adminMiddleware, upload.single("myPhoto"), uploadImage, create);
+router.post('/recipe', requireSignin, adminMiddleware, upload.single("photo"), uploadImage, create);
 
 export default router;

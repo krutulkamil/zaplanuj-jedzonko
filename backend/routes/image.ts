@@ -11,7 +11,7 @@ let upload = multer({
 });
 
 // @ts-ignore
-router.post('/upload', adminMiddleware, upload.single("myPhoto"), uploadImage);
+router.post('/upload', adminMiddleware, upload.single("photo"), uploadImage);
 router.get('/:id', getImage);
 router.get('/:id/download', downloadImage);
 

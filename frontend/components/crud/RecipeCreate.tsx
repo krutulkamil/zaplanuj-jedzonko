@@ -14,23 +14,54 @@ interface Props {
 }
 
 const RecipeCreate: FunctionComponent<Props> = ({router}) => {
+    const recipeFromLS = () => {
+        if (typeof window === 'undefined') {
+            return false;
+        }
+
+        if (localStorage.getItem('recipe')) {
+            return JSON.parse(localStorage.getItem('recipe')!)
+        } else {
+            return false;
+        }
+    };
+
+    const [body, setBody] = useState(recipeFromLS());
     const [values, setValues] = useState({
         title: "",
-        body: ""
-    })
+        success: "",
+        hidePublishButton: false
+    });
 
-    const {title, body} = values;
+    useEffect(() => {
+        // init categories & tags
+    }, [router]);
+
+    const {title, success, hidePublishButton} = values;
 
     const handlePublish = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('body', body);
+        formData.append('title', title);
+
+        // console.log -> formData
+        // @ts-ignore
+        for (const pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
     };
 
-    const handleBody = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // console.log(e)
+    const handleBody = (value: string) => {
+        setBody(value);
+        if (typeof window !== undefined) {
+            localStorage.setItem('recipe', JSON.stringify(value));
+        }
     };
 
-    const handleInputChange = (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValues({...values, [value]: e.target.value});
+    const handleInputChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = name === 'photo' ? e.target.files![0] : e.target.value;
+        setValues({...values, [name]: value});
     };
 
     const createRecipeForm = () => {
@@ -40,22 +71,26 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
                     <label className="">Tytuł</label>
                     <input type="text" className="" onChange={handleInputChange('title')} value={title}/>
                 </div>
-                <div>
+                <div className="quill-container">
                     <ReactQuill
                         modules={QuillModules}
                         formats={QuillFormats}
                         placeholder="Dodaj coś przepysznego..."
+                        value={body}
+                        onChange={handleBody}
                     />
+                </div>
+
+                <div>
+                    <button className="btn-secondary" type="submit">Publikuj!</button>
                 </div>
             </form>
         )
     };
 
-
     return (
         <div>
             <h3>Stwórz nowy przepis</h3>
-            {JSON.stringify(router)}
             {createRecipeForm()}
         </div>
     )

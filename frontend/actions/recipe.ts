@@ -5,7 +5,8 @@ export const createRecipe = async (recipe: any, token: string | undefined) => {
     try {
         await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/categories`, recipe, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
             }
         })
         toast.success(`Dodano nowy przepis!` , {theme: "dark"});
