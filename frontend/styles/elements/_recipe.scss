@@ -1,0 +1,47 @@
+.recipe-wrapper {
+  display: flex;
+  margin-top: 20px;
+}
+
+.recipe-label {
+  font-weight: bold;
+  display: block;
+}
+
+.recipe-title {
+  height: 30px;
+  width: 100%;
+  padding: 0 10px;
+  margin-bottom: 15px;
+}
+
+.recipe-left {
+  margin-right: 20px;
+  padding-top: 10px;
+}
+
+.recipe-right {
+  flex: 1;
+  .recipe-headings {
+    margin: 10px 0
+  }
+
+  .recipe-list {
+    max-height: 250px;
+    overflow-y: scroll;
+
+    .list-element {
+      list-style: none;
+
+      input {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+
+
+.recipe-spacing {
+  margin-bottom: 10px;
+}

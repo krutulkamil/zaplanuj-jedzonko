@@ -8,9 +8,7 @@ const RecipePage: NextPage = (): JSX.Element => {
         <Layout>
             <Admin>
                 <h2>Dodaj nowy przepis</h2>
-                <div className="recipe-create-wrapper">
-                    <RecipeCreate/>
-                </div>
+                <RecipeCreate/>
             </Admin>
         </Layout>
     )
