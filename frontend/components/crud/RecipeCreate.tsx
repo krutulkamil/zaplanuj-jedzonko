@@ -27,7 +27,11 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
     };
 
     const [categories, setCategories] = useState([] as Category[] | undefined);
+    const [checkedCategories, setCheckedCategories] = useState([] as string[]);
+
     const [tags, setTags] = useState([] as Tag[] | undefined);
+    const [checkedTags, setCheckedTags] = useState([] as string[]);
+
     const [body, setBody] = useState(recipeFromLS());
     const [values, setValues] = useState({
         title: "",
@@ -55,6 +59,8 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         const formData = new FormData();
         formData.append('body', body);
         formData.append('title', title);
+        formData.append('categories', checkedCategories.join(','));
+        formData.append('tags', checkedTags.join(','));
 
         // console.log -> formData
         for (const pair of formData.entries()) {
@@ -74,11 +80,35 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         setValues({...values, [name]: value});
     };
 
+    const handleToggleCategory = (category: string) => () => {
+        const clickedCategory = checkedCategories.indexOf(category);
+        const all = [...checkedCategories];
+
+        if (clickedCategory === -1) {
+            all.push(category);
+        } else {
+            all.splice(clickedCategory, 1);
+        }
+        setCheckedCategories(all);
+    };
+
+    const handleToggleTags = (tag: string) => () => {
+        const clickedTag = checkedTags.indexOf(tag);
+        const all = [...checkedTags];
+
+        if (clickedTag === -1) {
+            all.push(tag);
+        } else {
+            all.splice(clickedTag, 1);
+        }
+        setCheckedTags(all);
+    };
+
     const showCategories = () => {
         return (
             categories && categories.map((cat, idx) => (
                <li key={idx} className="list-element">
-                   <input type="checkbox" />
+                   <input onChange={handleToggleCategory(cat._id)} type="checkbox" />
                    <label>{cat.name}</label>
                </li>
             ))
@@ -89,7 +119,7 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         return (
             tags && tags.map((tag, idx) => (
                 <li key={idx} className="list-element">
-                    <input type="checkbox" />
+                    <input onChange={handleToggleTags(tag._id)} type="checkbox" />
                     <label>{tag.name}</label>
                 </li>
             ))

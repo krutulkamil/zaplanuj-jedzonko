@@ -19,7 +19,7 @@ export interface Category {
     _id:  string;
     name: string;
     slug: string;
-    __v:  number;
+    __v?:  number;
 }
 
 export const getCategories = async (): Promise<Category[] | undefined> => {
