@@ -8,9 +8,20 @@ import {getTags, Tag} from '../../actions/tag';
 import {createRecipe} from '../../actions/recipe';
 const ReactQuill = dynamic(() => import('react-quill'), {ssr: false});
 import {QuillModules, QuillFormats} from "../../helpers/quill";
+import {BsFillFileEarmarkImageFill, BsFillCheckCircleFill} from "react-icons/bs";
+import {TiInputChecked} from 'react-icons/ti';
+import {toast} from "react-toastify";
 
 interface Props {
     router: NextRouter
+}
+
+type photoType = string | Blob;
+
+interface InitialState {
+    title: string;
+    photo: null | photoType,
+    reload: boolean;
 }
 
 const RecipeCreate: FunctionComponent<Props> = ({router}) => {
@@ -33,16 +44,19 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
     const [checkedTags, setCheckedTags] = useState([] as string[]);
 
     const [body, setBody] = useState(recipeFromLS());
-    const [values, setValues] = useState({
+    const [values, setValues] = useState<InitialState>({
         title: "",
-        success: "",
-        hidePublishButton: false
+        photo: null,
+        reload: false
     });
 
+    const token = getCookie('token');
+    const {title, photo, reload} = values;
+
     useEffect(() => {
-        initCategories().then(() => console.log('Pobrano kategorie!'));
-        initTags().then(() => console.log('Pobrano tagi!'));
-    }, [router]);
+        initCategories();
+        initTags();
+    }, [router, reload]);
 
     const initCategories = async () => {
         setCategories(await getCategories());
@@ -52,19 +66,27 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         setTags(await getTags());
     };
 
-    const {title, success, hidePublishButton} = values;
+    const isFormValid = () => {
+        if (!title || !body || !photo || !checkedCategories || !checkedTags) {
+            toast.error('Wypełnij wszystkie pola!', {theme: "dark"});
+            return false;
+        } else {
+            return true;
+        }
+    };
 
     const handlePublish = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('body', body);
         formData.append('title', title);
+        formData.append('body', body);
         formData.append('categories', checkedCategories.join(','));
         formData.append('tags', checkedTags.join(','));
+        formData.append('photo', photo!)
 
-        // console.log -> formData
-        for (const pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);
+        if (isFormValid()) {
+            createRecipe(formData, token)
+                .then(handleResetValues);
         }
     };
 
@@ -80,6 +102,13 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         setValues({...values, [name]: value});
     };
 
+    const handleResetValues = () => {
+        setBody("");
+        setCategories([]);
+        setTags([]);
+        setValues({...values, title: "", photo: null, reload: !reload});
+    };
+
     const handleToggleCategory = (category: string) => () => {
         const clickedCategory = checkedCategories.indexOf(category);
         const all = [...checkedCategories];
@@ -89,6 +118,7 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         } else {
             all.splice(clickedCategory, 1);
         }
+
         setCheckedCategories(all);
     };
 
@@ -101,6 +131,7 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         } else {
             all.splice(clickedTag, 1);
         }
+
         setCheckedTags(all);
     };
 
@@ -143,10 +174,10 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
                     />
                 </div>
                 <div>
-                    <button className="btn-secondary" type="submit">Publikuj!</button>
+                    <button className="btn-secondary btn-publish" type="submit">Publikuj!</button>
                 </div>
             </form>
-        )
+        );
     };
 
     return (
@@ -155,14 +186,25 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
                 {createRecipeForm()}
             </div>
             <aside className="recipe-right">
-                <h4 className="recipe-headings">Kategorie</h4>
+                <div className="recipe-image">
+                    <h4>Zdjęcie przepisu:</h4>
+                    <hr/>
+                    <label className="btn-image">{photo ? <BsFillCheckCircleFill/> :
+                        (
+                            <>
+                                <BsFillFileEarmarkImageFill/> Dodaj zdjęcie
+                            </>
+                        )}
+                        <input onChange={handleInputChange('photo')} type="file" accept="image/*" hidden/>
+                    </label>
+                </div>
+                <h4 className="recipe-headings">Kategorie:</h4>
                 <hr className="recipe-spacing"/>
                 <ul className="recipe-list">{showCategories()}</ul>
-                <h4 className="recipe-headings">Tagi</h4>
+                <h4 className="recipe-headings">Tagi:</h4>
                 <hr className="recipe-spacing"/>
                 <ul className="recipe-list">{showTags()}</ul>
             </aside>
-
         </div>
     )
 };

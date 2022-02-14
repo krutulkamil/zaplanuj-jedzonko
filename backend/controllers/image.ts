@@ -25,7 +25,7 @@ export const uploadImage = async (req: IImageRequest, res: Response, next: NextF
     try {
         if (!req.file) {
             return res.status(400).json({
-                message: "Hej! Potrzebujemy tego zdjęcia!"
+                error: "Hej! Potrzebujemy tego zdjęcia!"
             });
         }
 
@@ -41,7 +41,7 @@ export const uploadImage = async (req: IImageRequest, res: Response, next: NextF
             console.log((error as Error).message);
 
             return res.status(400).json({
-                message: "Błąd Cloudinary"
+                error: "Błąd Cloudinary"
             });
         }
 
@@ -60,7 +60,7 @@ export const uploadImage = async (req: IImageRequest, res: Response, next: NextF
     } catch (error) {
         console.log((error as Error).message);
         return res.status(500).json({
-            message: "Błąd serwera!"
+            error: "Błąd serwera!"
         });
     }
 };
@@ -71,7 +71,7 @@ export const getImage = async (req: Request, res: Response) => {
         const image = await Image.findById(id);
         if (!image) {
             return res.status(404).json({
-                message: "Zdjęcie nie zostało znalezione!"
+                error: "Zdjęcie nie zostało znalezione!"
             });
         }
 
@@ -87,7 +87,7 @@ export const getImage = async (req: Request, res: Response) => {
     } catch (error) {
         console.log((error as Error).message);
         return res.status(500).json({
-            message: "Błąd serwera!"
+            error: "Błąd serwera!"
         })
     }
 };
@@ -98,7 +98,7 @@ export const downloadImage = async (req: Request, res: Response) => {
         const image = await Image.findById(id);
         if (!image) {
             return res.status(404).json({
-                message: "Zdjęcie nie istnieje!"
+                error: "Zdjęcie nie istnieje!"
             });
         }
 
@@ -107,7 +107,7 @@ export const downloadImage = async (req: Request, res: Response) => {
     } catch (error) {
         console.log((error as Error).message);
         return res.status(500).json({
-            message: "Błąd serwera!"
+            error: "Błąd serwera!"
         });
     }
 };

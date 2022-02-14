@@ -3,7 +3,7 @@ import axios, {AxiosError} from "axios";
 
 export const createRecipe = async (recipe: any, token: string | undefined) => {
     try {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/categories`, recipe, {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/recipe`, recipe, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "multipart/form-data"
