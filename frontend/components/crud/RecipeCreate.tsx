@@ -9,7 +9,6 @@ import {createRecipe} from '../../actions/recipe';
 const ReactQuill = dynamic(() => import('react-quill'), {ssr: false});
 import {QuillModules, QuillFormats} from "../../helpers/quill";
 import {BsFillFileEarmarkImageFill, BsFillCheckCircleFill} from "react-icons/bs";
-import {TiInputChecked} from 'react-icons/ti';
 import {toast} from "react-toastify";
 
 interface Props {
@@ -50,8 +49,8 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         reload: false
     });
 
-    const token = getCookie('token');
     const {title, photo, reload} = values;
+    const token = getCookie('token');
 
     useEffect(() => {
         initCategories();
@@ -66,28 +65,9 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         setTags(await getTags());
     };
 
-    const isFormValid = () => {
-        if (!title || !body || !photo || !checkedCategories || !checkedTags) {
-            toast.error('Wypełnij wszystkie pola!', {theme: "dark"});
-            return false;
-        } else {
-            return true;
-        }
-    };
-
-    const handlePublish = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('body', body);
-        formData.append('categories', checkedCategories.join(','));
-        formData.append('tags', checkedTags.join(','));
-        formData.append('photo', photo!)
-
-        if (isFormValid()) {
-            createRecipe(formData, token)
-                .then(handleResetValues);
-        }
+    const handleInputChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = name === 'photo' ? e.target.files![0] : e.target.value;
+        setValues({...values, [name]: value});
     };
 
     const handleBody = (value: string) => {
@@ -97,9 +77,13 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         }
     };
 
-    const handleInputChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = name === 'photo' ? e.target.files![0] : e.target.value;
-        setValues({...values, [name]: value});
+    const isFormFilled = () => {
+        if (!title || !body || !photo || !checkedCategories || !checkedTags) {
+            toast.error('Wypełnij wszystkie pola!', {theme: "dark"});
+            return false;
+        } else {
+            return true;
+        }
     };
 
     const handleResetValues = () => {
@@ -133,6 +117,21 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         }
 
         setCheckedTags(all);
+    };
+
+    const handlePublish = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('body', body);
+        formData.append('categories', checkedCategories.join(','));
+        formData.append('tags', checkedTags.join(','));
+        formData.append('photo', photo!)
+
+        if (isFormFilled()) {
+            createRecipe(formData, token)
+                .then(handleResetValues);
+        }
     };
 
     const showCategories = () => {
