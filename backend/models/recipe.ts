@@ -40,7 +40,6 @@ const recipeSchema = new Schema({
     categories: [{type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true}],
     tags: [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag', required: true}],
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
-
 }, { timestamps: true });
 
 interface DocumentResult<T> {

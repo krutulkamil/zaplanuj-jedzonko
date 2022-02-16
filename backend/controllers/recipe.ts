@@ -1,7 +1,8 @@
 import {Request, Response} from "express";
 import Recipe from "../models/recipe";
-// import Category from '../models/Category';
-// import Tag from '../models/Tag';
+// import Category from '../models/category';
+// import Tag from '../models/tag';
+// import Image from '../models/image'
 import {stripHtml} from "string-strip-html";
 import _ from "lodash";
 import {smartTrim} from "../helpers/recipe";
@@ -89,7 +90,28 @@ export const create = async (req: IRecipeRequest, res: Response) => {
     });
 };
 
+export const list = async (req: Request, res: Response) => {
+    Recipe.find({})
+        .populate('categories', '_id name slug')
+        .populate('tags', '_id name slug')
+        .populate('photo', '_id secure_url filename')
+        .populate('postedBy', '_id name username')
+        .select('_id title slug excerpt categories tags postedBy photo createdAt updatedAt')
+        .exec((err, data) => {
+            if (err) {
+                return res.json({
+                    error: 'Nie można pobrać przepisów!'
+                });
+            } else {
+                res.json(data);
+            }
+        });
+};
 
+export const listAllRecipesCategoriesTags = async (req: Request, res: Response) => {};
 
+export const read = async (req: Request, res: Response) => {};
 
+export const remove = async (req: Request, res: Response) => {};
 
+export const update = async (req: Request, res: Response) => {};
