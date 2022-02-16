@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useEffect } from "react";
+import React, {FunctionComponent, useState, useEffect} from "react";
 import Link from "next/link";
 import Router, {NextRouter, withRouter} from "next/router";
 import dynamic from "next/dynamic";
@@ -6,9 +6,11 @@ import {getCookie, isAuth} from '../../actions/auth';
 import {getCategories, Category} from '../../actions/category';
 import {getTags, Tag} from '../../actions/tag';
 import {createRecipe} from '../../actions/recipe';
+import Image from "next/image";
+
 const ReactQuill = dynamic(() => import('react-quill'), {ssr: false});
 import {QuillModules, QuillFormats} from "../../helpers/quill";
-import {BsFillFileEarmarkImageFill, BsFillCheckCircleFill} from "react-icons/bs";
+import {BiImageAdd, BiImages} from "react-icons/bi";
 import {toast} from "react-toastify";
 
 interface Props {
@@ -39,6 +41,8 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
     const [categories, setCategories] = useState([] as Category[] | undefined);
     const [checkedCategories, setCheckedCategories] = useState([] as string[]);
 
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
     const [tags, setTags] = useState([] as Tag[] | undefined);
     const [checkedTags, setCheckedTags] = useState([] as string[]);
 
@@ -66,8 +70,13 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
     };
 
     const handleInputChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = name === 'photo' ? e.target.files![0] : e.target.value;
+        const value = e.target.value;
         setValues({...values, [name]: value});
+    };
+
+    const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValues({...values, photo: e.target.files![0]});
+        setImagePreview(URL.createObjectURL(e.target.files![0]))
     };
 
     const handleBody = (value: string) => {
@@ -91,6 +100,7 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         setCategories([]);
         setTags([]);
         setValues({...values, title: "", photo: null, reload: !reload});
+        setImagePreview(null);
     };
 
     const handleToggleCategory = (category: string) => () => {
@@ -137,10 +147,10 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
     const showCategories = () => {
         return (
             categories && categories.map((cat, idx) => (
-               <li key={idx} className="list-element">
-                   <input onChange={handleToggleCategory(cat._id)} type="checkbox" />
-                   <label>{cat.name}</label>
-               </li>
+                <li key={idx} className="list-element">
+                    <input onChange={handleToggleCategory(cat._id)} type="checkbox"/>
+                    <label>{cat.name}</label>
+                </li>
             ))
         );
     };
@@ -149,7 +159,7 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
         return (
             tags && tags.map((tag, idx) => (
                 <li key={idx} className="list-element">
-                    <input onChange={handleToggleTags(tag._id)} type="checkbox" />
+                    <input onChange={handleToggleTags(tag._id)} type="checkbox"/>
                     <label>{tag.name}</label>
                 </li>
             ))
@@ -187,14 +197,19 @@ const RecipeCreate: FunctionComponent<Props> = ({router}) => {
             <aside className="recipe-right">
                 <div className="recipe-image">
                     <h4>Zdjęcie przepisu:</h4>
-                    <hr/>
-                    <label className="btn-image">{photo ? <BsFillCheckCircleFill/> :
-                        (
-                            <>
-                                <BsFillFileEarmarkImageFill/> Dodaj zdjęcie
-                            </>
-                        )}
-                        <input onChange={handleInputChange('photo')} type="file" accept="image/*" hidden/>
+                    {imagePreview ? (
+                        <img src={imagePreview} className="image-preview" alt="Zdjęcie przepisu"/>
+                    ) : null}
+                    <label className="btn-image">{photo ? (
+                        <>
+                            <BiImages className="icon-spacing"/> Wymień zdjęcie
+                        </>
+                    ) : (
+                        <>
+                            <BiImageAdd className="icon-spacing"/> Dodaj zdjęcie
+                        </>
+                    )}
+                        <input onChange={handlePhotoChange} type="file" accept="image/*" hidden/>
                     </label>
                 </div>
                 <h4 className="recipe-headings">Kategorie:</h4>

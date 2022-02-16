@@ -18,9 +18,11 @@
 .recipe-left {
   margin-right: 20px;
   padding-top: 10px;
+  flex: 1;
 }
 
 .recipe-right {
+  margin-top: 10px;
   flex: 1;
   .recipe-headings {
     margin: 10px 0
@@ -44,7 +46,14 @@
   }
 }
 
+.icon-spacing {
+  margin-right: 5px;
+}
 
+.image-preview {
+  width: 100%;
+  height: 100%;
+}
 
 .recipe-spacing {
   margin-bottom: 10px;
