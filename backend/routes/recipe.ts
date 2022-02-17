@@ -19,8 +19,8 @@ router.get('/recipes', list);
 router.post('/recipes-categories-tags', listAllRecipesCategoriesTags);
 router.get('/recipe/:slug', read);
 // @ts-ignore
-router.delete('/recipe/:slug', requireSignin ,adminMiddleware, remove);
+router.delete('/recipe/:slug', requireSignin, adminMiddleware, remove);
 // @ts-ignore
-router.put('/recipe/:slug', requireSignin ,adminMiddleware, update);
+router.put('/recipe/:slug', requireSignin, adminMiddleware, update);
 
 export default router;

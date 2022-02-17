@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
-import Recipe from "../models/recipe";
-// import Category from '../models/category';
-// import Tag from '../models/tag';
+import Recipe, {IRecipeModel} from "../models/recipe";
+import Category, {ICategoryModel} from '../models/category';
+import Tag, {ITagModel} from '../models/tag';
 // import Image from '../models/image'
 import {stripHtml} from "string-strip-html";
 import _ from "lodash";
@@ -108,10 +108,93 @@ export const list = async (req: Request, res: Response) => {
         });
 };
 
-export const listAllRecipesCategoriesTags = async (req: Request, res: Response) => {};
+export const listAllRecipesCategoriesTags = async (req: Request, res: Response) => {
+    // ile przepisów na stronę
+    let limit: number = req.body.limit ? parseInt(req.body.limit) : 10;
+    let skip = req.body.skip ? parseInt(req.body.skip) : 0
 
-export const read = async (req: Request, res: Response) => {};
+    let recipes: IRecipeModel[];
+    let categories: ICategoryModel[];
+    let tags: ITagModel[];
 
-export const remove = async (req: Request, res: Response) => {};
+    Recipe.find({})
+        .populate('categories', '_id name slug')
+        .populate('tags', '_id name slug')
+        .populate('photo', '_id secure_url filename')
+        .populate('postedBy', '_id name username')
+        .sort({createdAt: -1})
+        .skip(skip)
+        .limit(limit)
+        .select('_id title slug excerpt categories tags postedBy photo createdAt updatedAt')
+        .exec((err, data) => {
+            if (err) {
+                return res.json({
+                    error: 'Nie można pobrać przepisów!'
+                });
+            }
+            // przepisy
+            recipes = data;
 
-export const update = async (req: Request, res: Response) => {};
+            // pobierz kategorie
+            Category.find({})
+                .exec((err, category) => {
+                    if (err) {
+                        return res.json({
+                            error: 'Nie można pobrać kategorii!'
+                        });
+                    }
+                    categories = category
+
+                    // pobierz tagi
+                    Tag.find({})
+                        .exec((err, tag) => {
+                            if (err) {
+                                return res.json({
+                                    error: 'Nie można pobrać tagów!'
+                                });
+                            }
+                            tags = tag
+
+                            // zwróć wszystkie przepisy z kategoriami i tagami
+                            res.json({recipes, categories, tags, size: recipes.length});
+                        });
+                });
+        });
+};
+
+export const read = async (req: Request, res: Response) => {
+    const slug = req.params.slug.toLowerCase();
+    Recipe.findOne({slug})
+        .populate('categories', '_id name slug')
+        .populate('tags', '_id name slug')
+        .populate('photo', '_id secure_url filename')
+        .populate('postedBy', '_id name username')
+        .select('_id title body slug mtitle mdesc categories tags postedBy photo createdAt updatedAt')
+        .exec((err, data) => {
+            if (err) {
+                return res.json({
+                    error: "Nie można pobrać przepisu!"
+                });
+
+            }
+            res.json(data);
+        });
+};
+
+export const remove = async (req: Request, res: Response) => {
+    const slug = req.params.slug;
+    Recipe.findOneAndRemove({slug}).exec((err, data) => {
+        if (err) {
+            res.json({
+                error: "Błąd przy usuwaniu przepisu!"
+            });
+        }
+        res.json({
+            message: "Przepis został usunięty!"
+        });
+    });
+};
+
+export const update = async (req: Request, res: Response) => {
+
+};
