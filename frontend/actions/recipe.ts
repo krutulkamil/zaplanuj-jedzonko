@@ -1,5 +1,6 @@
 import {toast} from "react-toastify";
 import axios, {AxiosError} from "axios";
+import {AllRecipesCategoriesTags} from "../types";
 
 export const createRecipe = async (recipe: any, token: string | undefined) => {
     try {
@@ -10,6 +11,16 @@ export const createRecipe = async (recipe: any, token: string | undefined) => {
             }
         })
         toast.success(`Dodano nowy przepis!` , {theme: "dark"});
+    } catch (error) {
+        const err = error as AxiosError;
+        toast.error(err.response?.data.error, {theme: "dark"});
+    }
+};
+
+export const listRecipesWithCategoriesAndTags = async (): Promise<AllRecipesCategoriesTags | undefined> => {
+    try {
+        const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/recipes-categories-tags`);
+        return data;
     } catch (error) {
         const err = error as AxiosError;
         toast.error(err.response?.data.error, {theme: "dark"});

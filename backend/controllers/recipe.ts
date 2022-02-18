@@ -195,6 +195,44 @@ export const remove = async (req: Request, res: Response) => {
     });
 };
 
-export const update = async (req: Request, res: Response) => {
+export const update = async (req: IRecipeRequest, res: Response) => {
+    const slug = req.params.slug;
 
+    Recipe.findOne({slug})
+        .exec((err, oldRecipe) => {
+            if (err) {
+                res.json({
+                    error: "Błąd aktualizacji przepisu!"
+                });
+            }
+
+            let slugBeforeMerge = oldRecipe!.slug;
+            oldRecipe = _.merge(oldRecipe, req.body);
+            oldRecipe!.slug = slugBeforeMerge;
+
+            const {body, categories, tags} = req.body;
+
+            if (body) {
+                oldRecipe!.excerpt = smartTrim(body, 320, ' ', ' ...');
+                oldRecipe!.mdesc = stripHtml(body.substring(0, 160)).result;
+            }
+
+            if (categories) {
+                oldRecipe!.categories = categories.split(',');
+            }
+
+            if (tags) {
+                oldRecipe!.tags = tags.split(',');
+            }
+
+            oldRecipe!.save((err, result) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).json({
+                        error: "Błąd aktualizacji przepisu!"
+                    });
+                }
+                res.json(result);
+            });
+        });
 };

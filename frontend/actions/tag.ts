@@ -1,5 +1,6 @@
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
+import {Tag} from "../types";
 
 export const create = async (tag: string, token: string | undefined) => {
     try {
@@ -14,13 +15,6 @@ export const create = async (tag: string, token: string | undefined) => {
         toast.error(err.response?.data.error, {theme: "dark"});
     }
 };
-
-export interface Tag {
-    _id:  string;
-    name: string;
-    slug: string;
-    __v:  number;
-}
 
 export const getTags = async (): Promise<Tag[] | undefined> => {
     try {
