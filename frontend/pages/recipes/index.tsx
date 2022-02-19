@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../../components/Layout';
 import {useState} from 'react';
@@ -8,13 +7,55 @@ import {NextPage} from "next";
 import Card from "../../components/recipe/Card";
 
 interface PageProps {
-    recipes?: Recipe[]
-    categories?: Category[]
-    tags?: Tag[]
-    size?: number
+    recipes?: Recipe[];
+    categories?: Category[];
+    tags?: Tag[];
+    totalRecipes?: number;
+    recipesLimit: number;
+    recipesSkip: number;
 }
 
-const Recipes: NextPage<PageProps> = ({recipes, categories, tags, size}): JSX.Element => {
+const Recipes: NextPage<PageProps>
+    = ({
+           recipes,
+           categories,
+           tags,
+           totalRecipes,
+           recipesLimit,
+           recipesSkip
+       }): JSX.Element => {
+    const [limit, setLimit] = useState<number>(recipesLimit);
+    const [skip, setSkip] = useState<number>(recipesSkip);
+    const [size, setSize] = useState<number | undefined>(totalRecipes);
+    const [loadedRecipes, setLoadedRecipes] = useState([] as Recipe[]);
+
+    const loadMore = async () => {
+        let toSkip: number = skip + limit;
+        const data = await listRecipesWithCategoriesAndTags(toSkip, limit);
+        if (data) {
+            setLoadedRecipes([...loadedRecipes, ...data.recipes]);
+            setSize(data.size);
+            setSkip(toSkip);
+        }
+    };
+
+    const loadMoreButton = () => {
+        if (size) {
+            return (
+                size > 0 && size >= limit && (
+                    <button onClick={loadMore} className="btn-load-more">Więcej przepisów!</button>
+                )
+            );
+        }
+    };
+
+    const showLoadedRecipes = () => {
+        return loadedRecipes && loadedRecipes.map((recipe, idx) => (
+            <article key={idx} className="card-wrapper">
+                <Card recipe={recipe}/>
+            </article>
+        ));
+    };
 
     const showAllRecipes = () => {
         return recipes && recipes.map((recipe, idx) => (
@@ -57,6 +98,10 @@ const Recipes: NextPage<PageProps> = ({recipes, categories, tags, size}): JSX.El
                 </div>
                 <div className="card-container">
                     {showAllRecipes()}
+                    {showLoadedRecipes()}
+                </div>
+                <div className="load-more-container">
+                    {loadMoreButton()}
                 </div>
             </main>
         </Layout>
@@ -64,13 +109,17 @@ const Recipes: NextPage<PageProps> = ({recipes, categories, tags, size}): JSX.El
 };
 
 Recipes.getInitialProps = async (): Promise<PageProps> => {
-    const data: AllRecipesCategoriesTags | undefined = await listRecipesWithCategoriesAndTags();
+    let skip = 0;
+    let limit = 6;
+    const data: AllRecipesCategoriesTags | undefined = await listRecipesWithCategoriesAndTags(skip, limit);
 
     return {
         recipes: data?.recipes,
         categories: data?.categories,
         tags: data?.tags,
-        size: data?.size
+        totalRecipes: data?.size,
+        recipesLimit: limit,
+        recipesSkip: skip
     }
 };
 

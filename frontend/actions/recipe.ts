@@ -17,9 +17,12 @@ export const createRecipe = async (recipe: any, token: string | undefined) => {
     }
 };
 
-export const listRecipesWithCategoriesAndTags = async (): Promise<AllRecipesCategoriesTags | undefined> => {
+export const listRecipesWithCategoriesAndTags = async (skip?: number, limit?: number): Promise<AllRecipesCategoriesTags | undefined> => {
+    const pagination = {
+        limit, skip
+    }
     try {
-        const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/recipes-categories-tags`);
+        const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER}/recipes-categories-tags`, pagination);
         return data;
     } catch (error) {
         const err = error as AxiosError;

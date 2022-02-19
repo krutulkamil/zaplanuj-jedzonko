@@ -8,6 +8,22 @@
   border-radius: 5px;
 }
 
+.btn-load-more {
+  font: inherit;
+  font-size: 15px;
+  background: $btn-sec-bgc;
+  color: $btn-sec-color !important;
+  border: 0;
+  border-radius: 5px;
+  padding: 10px 25px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.btn-load-more:hover {
+  opacity: 0.9;
+}
+
 .btn:hover {
   opacity: 0.9;
 }
