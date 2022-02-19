@@ -28,6 +28,21 @@
   opacity: 0.8;
 }
 
+.btn-secondary-card {
+  display: block;
+  text-align: center;
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  background: #127369;
+  color: $btn-sec-color !important;
+  border: 0;
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin: 0;
+  cursor: pointer;
+}
+
 .btn-secondary-tag {
   font: inherit;
   font-size: 13px;

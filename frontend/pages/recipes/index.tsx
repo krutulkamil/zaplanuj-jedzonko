@@ -18,9 +18,25 @@ const Recipes: NextPage<PageProps> = ({recipes, categories, tags, size}): JSX.El
 
     const showAllRecipes = () => {
         return recipes && recipes.map((recipe, idx) => (
-            <article key={idx} style={{margin: "10px"}}>
+            <article key={idx} className="card-wrapper">
                 <Card recipe={recipe}/>
             </article>
+        ));
+    }
+
+    const showAllCategories = () => {
+        return categories && categories.map((category, idx) => (
+            <Link href={`/categories/${category.slug}`} key={idx}>
+                <a className="btn-secondary-category">{category.name}</a>
+            </Link>
+        ));
+    }
+
+    const showAllTags = () => {
+        return tags && tags.map((tag, idx) => (
+            <Link href={`/categories/${tag.slug}`} key={idx}>
+                <a className="btn-secondary-tag">{tag.name}</a>
+            </Link>
         ));
     }
 
@@ -32,11 +48,14 @@ const Recipes: NextPage<PageProps> = ({recipes, categories, tags, size}): JSX.El
                         <h1>Moje przepisy</h1>
                     </header>
                     <section>
-                        <p>pokaż kategorie i tagi</p>
+                        <div className="categories-tags-container">
+                            {showAllCategories()}
+                            {showAllTags()}
+                        </div>
                         <hr/>
                     </section>
                 </div>
-                <div style={{display: 'flex', flexWrap: "wrap", justifyContent: "center"}}>
+                <div className="card-container">
                     {showAllRecipes()}
                 </div>
             </main>
